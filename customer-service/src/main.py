@@ -31,7 +31,7 @@ logger.info("Customer Service started")
 tags_metadata = [
     {
         "name": "Customer Service",
-        "description": "management  of customers",
+        "description": "management of customers",
     }
 ]
 
@@ -49,7 +49,7 @@ app.add_middleware(CORSMiddleware,
     )
 
 
-# app.include_router(customer.router)
+app.include_router(customer.router)
 # app.include_router(holes.router)
 
 
