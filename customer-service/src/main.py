@@ -13,10 +13,15 @@ from routers import customer
 from fastapi import FastAPI
 from fastapi_versioning import VersionedFastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from database.postgres import SessionLocal
+from database.postgres import engine
+from database.postgres import Base
+from src import models
+
+
 import uvicorn
 import logging
-
-
+import os
 
 logging.basicConfig(filename='customer_service.log', 
 format='%(asctime)s - %(levelname)s - %(filename)s - %(message)s', 
@@ -36,6 +41,10 @@ tags_metadata = [
 ]
 
 app = FastAPI(title="Customer Service",openapi_tags=tags_metadata)
+
+
+models.Base.metadata.create_all(bind=engine)
+
 
 #origins set to a default of all for demo purpose. adding test
 origins = ["*"]
