@@ -30,7 +30,8 @@ class Customer(BaseModel):
     id : UUID = Field(default_factory=uuid4)
     firstname: str
     lastname: str
-    email: EmailStr 
+    email: EmailStr
+    address: Address
     password: str
     
     
@@ -38,10 +39,8 @@ class Customer(BaseModel):
         orm_mode = True
 
 class CustomerResponse(BaseModel):
-    firstname:str
-    lastname: str
-    email: EmailStr
-    created_at: datetime
+    email: EmailStr = None
+  
     class Config:
         orm_mode = True
     
