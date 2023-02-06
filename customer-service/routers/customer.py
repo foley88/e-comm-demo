@@ -17,23 +17,13 @@ from fastapi import HTTPException
 from fastapi import Depends
 from fastapi import APIRouter
 from fastapi_versioning import versioned_api_route
-from datetime import datetime
-from pymongo.errors import ConnectionFailure
 from passlib.context import CryptContext
 from src import schemas
-from sqlalchemy import create_engine  
-from sqlalchemy import ForeignKey
-from sqlalchemy import Table
-from sqlalchemy import Column
-from sqlalchemy import String
-from sqlalchemy import Integer
-from sqlalchemy import CHAR
 from database.postgres import get_db
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError
 from src import utils
-from database import postgres
 from src import models
-import uuid
 
 #IMPORTS
 import logging
@@ -54,36 +44,67 @@ router = APIRouter(
 pass_context = CryptContext(schemes=['bcrypt'],deprecated='auto')
 
 #create course
-@router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.CustomerResponse)
+@router.post("/", status_code=status.HTTP_201_CREATED)
 def create_customer(customer: schemas.Customer, database: Session = Depends(get_db)):
-    try:
     
-        hashed_password = utils.hashpassword(customer.password)
+    
+    # adding the customer data to customer table 
+    hashed_password = utils.hashpassword(customer.password)
      
-        customer.password = hashed_password
-        
-        print(customer)
-        new_customer = models.Customer(id = customer.id, firstname= customer.firstname, lastname= customer.lastname, 
-                                        email = customer.email, password= customer.password)
-       
-       
+    customer.password = hashed_password
+    
+    print(customer)
+    print(customer.address.address_line_1)
+    try:
+        new_customer = models.Customer(id = customer.id, firstname= customer.firstname, lastname= customer.lastname,email = customer.email, password= customer.password)
         database.add(new_customer)
         database.commit()
-        database.refresh(new_customer)
+        #adding to the address table 
+        new_address = models.Address(address_line_1 = customer.address.address_line_1, 
+                                 address_line_2 =customer.address.address_line_2,address_line_3 = customer.address.address_line_3, country = customer.address.country, customer_id = new_customer.id )
+
+        database.add(new_address)    
+        database.commit() 
         
-           
- 
-        logger.info(status.HTTP_201_CREATED)
+    except IntegrityError:
+        print("made it here")
+        database.rollback()
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail= f'the email: {customer.email} already exists')
         
-    except ConnectionFailure:
-        logger.critical("Server not available")
-
-
-
-    return new_customer
+    
+        
+    
+            
+      
+    
 
 #update Customer
+@router.put("/{id}", status_code=status.HTTP_201_CREATED)
+def create_customer(customer: schemas.Customer, database: Session = Depends(get_db)):
+    
+    
+    # adding the customer data to customer table 
+    hashed_password = utils.hashpassword(customer.password)
+     
+    customer.password = hashed_password
+    
+    print(customer)
+    print(customer.address.address_line_1)
+    try:
+        new_customer = models.Customer(id = customer.id, firstname= customer.firstname, lastname= customer.lastname,email = customer.email, password= customer.password)
+        database.add(new_customer)
+        database.commit()
+        #adding to the address table 
+        new_address = models.Address(address_line_1 = customer.address.address_line_1, 
+                                 address_line_2 =customer.address.address_line_2,address_line_3 = customer.address.address_line_3, country = customer.address.country, customer_id = new_customer.id )
 
+        database.add(new_address)    
+        database.commit() 
+        
+    except IntegrityError:
+        print("made it here")
+        database.rollback()
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail= f'the email: {customer.email} already exists')
 
 #delete Customer
 
