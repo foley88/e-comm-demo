@@ -26,7 +26,7 @@ import os
 
 
 logging.basicConfig(
-    filename="customer_service.log",
+    filename="loginservice.log",
     format="%(asctime)s - %(levelname)s - %(filename)s - %(message)s",
     level=logging.DEBUG,
     force=True,
