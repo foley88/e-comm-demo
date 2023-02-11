@@ -13,7 +13,7 @@
 from datetime import date, datetime
 from uuid import UUID, uuid4
 
-from pydantic import BaseModel, EmailStr, ValidationError, validator
+from pydantic import UUID4, BaseModel, EmailStr, ValidationError, validator
 from sqlmodel import Field
 
 
@@ -36,6 +36,7 @@ class Customer(BaseModel):
 
 
 class CustomerResponse(BaseModel):
+    id = str
     email: EmailStr = None
 
     class Config:
