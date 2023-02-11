@@ -33,7 +33,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 logger.info("Login service started")
 
-## create the app
+## create the app login
 
 tags_metadata = [
     {
