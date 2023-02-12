@@ -53,7 +53,7 @@ def user_login(
     # pass the plain text password and hashed password to utils for validation
     # if passed validation provide the client back a JWT token
     # if failed dont allow access
-    print("Login working")
+
     print(form_data.__dict__)
 
     login_query = database.query(models.Customer).filter(
@@ -77,6 +77,5 @@ def user_login(
     else:
         data = dict()
         data["id"] = user.id
-        print(data)
 
     return create_access_token(data, None)
