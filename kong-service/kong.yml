@@ -19,16 +19,16 @@ plugins:
     config:
       minute: 5
       policy: local
-#   - name: jwt
-#     service: hello
-#     enabled: true
-#     config:
-#       key_claim_name: kid
-#       claims_to_verify:
-#       - exp
-# # consumers:
-# #   - username: login_server_issuer
-# # jwt_secrets:
-# #   - consumer: login_server_issuer
-# #     secret: "123456789marcofoley"
+  - name: jwt
+    service: customer
+    enabled: true
+    config:
+      key_claim_name: kid
+      claims_to_verify:
+      - exp
+consumers:
+  - username: customer
+jwt_secrets:
+  - consumer: customer
+    secret: "marco"
   
