@@ -127,3 +127,6 @@ def delete_customer(id: str, database: Session = Depends(get_db)):
             database.commit()
         except IntegrityError:
             pass
+
+
+# error handing and testing needs to be completed
